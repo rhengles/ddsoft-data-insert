@@ -31,3 +31,10 @@ export async function regiaoGet(query, idPais, idRegiao) {
 	cacheRegiao.set(idRegiao, regiao)
 	return { regiao, find, insert }
 }
+
+const reEstadoId0 = /^(\d)\d$/
+export function regiaoIdByEstadoId(idEstado) {
+	const match = String(idEstado).match(reEstadoId0)
+	if (match) return match[1]
+	throw new Error(`ID do estado inválido: ${JSON.stringify(idEstado)}`)
+}

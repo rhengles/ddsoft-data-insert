@@ -1,8 +1,8 @@
 
 const colsFind = [
 	'id',
-	'sigla',
-	'nome',
+	// 'sigla',
+	// 'nome',
 	'codigo_ibge',
 	'id_dentro_de',
 	'id_tipo',
