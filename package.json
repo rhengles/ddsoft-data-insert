@@ -1,0 +1,15 @@
+{
+  "name": "ddsoft-data-insert",
+  "version": "0.0.0",
+  "description": "-",
+  "main": "index.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rafael Hengles <rhengles@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@arijs/frontend": "^0.2.17",
+    "mysql": "^2.18.1"
+  }
+}
