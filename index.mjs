@@ -13,6 +13,7 @@ import { estadoDiv2Get } from './estado-div-2.mjs'
 import { municipioGet } from './municipio.mjs'
 import { paisBrasil } from './maps.mjs'
 import credentials from './credentials.local.mjs'
+import { distritoGet } from './distrito.mjs'
 
 const dirname = fileURLToPath(new URL('./_ignore', import.meta.url)).replace(/\/+$/,'')
 
@@ -49,7 +50,8 @@ function runCsv(query) {
 	return new Promise(async (resolve, reject) => {
 		try {
 			const rs = await tryOpenReadPromise(
-				pathJoin(dirname, 'RELATORIO_DTB_BRASIL_MUNICIPIO.csv'),
+				// pathJoin(dirname, 'RELATORIO_DTB_BRASIL_MUNICIPIO.csv'),
+				pathJoin(dirname, 'RELATORIO_DTB_BRASIL_DISTRITO.csv'),
 				csvStreamOpt
 			)
 
@@ -70,7 +72,7 @@ function runCsv(query) {
 }
 
 async function processRow(query, { row, rowIndex }) {
-	const [r1, r2, r3, r4, r5, r6, ,,,,, r12, r13] = row.split('\t')
+	const [r1, r2, r3, r4, r5, r6, ,,,,, r12, r13, , r15, r16] = row.split('\t')
 	// if (rowIndex % 50 == 0) console.log(rowIndex, r1, r2, r12, r13)
 	if (rowIndex === 0) return;
 
@@ -81,6 +83,10 @@ async function processRow(query, { row, rowIndex }) {
 	const idEstadoDiv2 = r5
 	const idMunicipio = r12
 	const nomeMunicipio = r13.trim()
+	const idDistrito = r15
+	const nomeDistrito = r16.trim()
+
+	if (+idEstado < 23) return;
 
 	const { regiao, find: findRegiao } = await regiaoGet(query, idPais, idRegiao)
 	if (findRegiao) console.log(`Result for região ${idRegiao}:`, regiao)
@@ -92,12 +98,14 @@ async function processRow(query, { row, rowIndex }) {
 	// if (findEstadoDiv1) console.log(`Result for estadoDiv1 ${idEstadoDiv1}:`, estadoDiv1)
 
 	const { estadoDiv2, find: findEstadoDiv2 } = await estadoDiv2Get(query, estadoDiv1, idEstadoDiv2, r6)
-	if (findEstadoDiv2) console.log(`Result for estadoDiv2 ${idEstadoDiv2}:`, estadoDiv2)
+	// if (findEstadoDiv2) console.log(`Result for estadoDiv2 ${idEstadoDiv2}:`, estadoDiv2)
 
 	const { municipio, find: findMunicipio } = await municipioGet(query, estadoDiv2, idMunicipio, nomeMunicipio)
-	if (findMunicipio)
+
+	const { distrito, find: findDistrito } = await distritoGet(query, municipio, idDistrito, nomeDistrito)
+	if (findDistrito)
 	if (rowIndex % 10 == 0)
-	console.log(rowIndex, r1, r2, idMunicipio, nomeMunicipio, `// Result for município:`, municipio.id, municipio.nome, municipio.codigo_ibge, `dentro_de`, municipio.id_dentro_de, `estado`, municipio.id_estado)
+	console.log(rowIndex, r1, r2, idMunicipio, nomeMunicipio, idDistrito, nomeDistrito, `// Result for distrito:`, distrito.id, `dentro_de`, distrito.id_dentro_de, `estado`, distrito.id_estado)
 }
 
 function connect(params) {
